@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Les charniers du chaos — Journal de campagne</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=IM+Fell+English:ital@0;1&family=UnifrakturMaguntia&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a0e08;
+    --parchment: #e6d5a8;
+    --parchment-dark: #c9b483;
+    --blood: #6b0f0f;
+    --blood-bright: #a01818;
+    --gold: #b8893a;
+    --gold-bright: #d4a84a;
+    --soot: #0e0805;
+    --bone: #d8c98a;
+    --shadow: rgba(0, 0, 0, 0.55);
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+    background:
+      radial-gradient(ellipse at top, #2a1408 0%, #0a0503 70%),
+      #0a0503;
+    background-attachment: fixed;
+    color: var(--ink);
+    font-family: 'IM Fell English', Georgia, serif;
+    font-size: 17px;
+    line-height: 1.55;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(107, 15, 15, 0.12) 0%, transparent 40%),
+      radial-gradient(circle at 80% 70%, rgba(107, 15, 15, 0.08) 0%, transparent 40%);
+    z-index: 0;
+  }
+
+  .wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem 1.25rem 5rem;
+  }
+
+  header.banner {
+    text-align: center;
+    padding: 3rem 1rem 2rem;
+    position: relative;
+  }
+
+  header.banner::after {
+    content: "";
+    display: block;
+    width: 60%;
+    max-width: 500px;
+    height: 2px;
+    margin: 1.5rem auto 0;
+    background: linear-gradient(90deg, transparent, var(--blood-bright), var(--gold-bright), var(--blood-bright), transparent);
+  }
+
+  h1.title {
+    font-family: 'UnifrakturMaguntia', serif;
+    font-size: clamp(2.5rem, 7vw, 5rem);
+    color: var(--blood-bright);
+    margin: 0;
+    letter-spacing: 0.02em;
+    text-shadow:
+      0 0 20px rgba(160, 24, 24, 0.5),
+      2px 2px 0 var(--soot),
+      4px 4px 12px var(--shadow);
+    line-height: 1.05;
+  }
+
+  .subtitle {
+    font-family: 'Cinzel', serif;
+    color: var(--gold-bright);
+    margin-top: 0.5rem;
+    font-size: 0.95rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    opacity: 0.85;
+  }
+
+  .dcc-tag {
+    display: inline-block;
+    margin-top: 1rem;
+    color: var(--bone);
+    font-style: italic;
+    opacity: 0.7;
+    font-size: 0.95rem;
+  }
+
+  section {
+    margin: 3rem 0;
+  }
+
+  h2.section-title {
+    font-family: 'Cinzel', serif;
+    color: var(--gold-bright);
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    font-size: 1.2rem;
+    text-align: center;
+    margin: 0 0 1.75rem;
+    position: relative;
+    padding-bottom: 0.75rem;
+  }
+
+  h2.section-title::after {
+    content: "✦";
+    display: block;
+    color: var(--blood-bright);
+    font-size: 1rem;
+    margin-top: 0.5rem;
+  }
+
+  /* CHARACTER GRID */
+  .characters {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
+  }
+
+  .char-card {
+    background:
+      linear-gradient(135deg, #e6d5a8 0%, #d4c08a 50%, #c9b483 100%);
+    border: 1px solid #6b4a1f;
+    border-radius: 3px;
+    padding: 0.9rem 1rem;
+    box-shadow:
+      0 0 0 1px rgba(0, 0, 0, 0.15) inset,
+      0 4px 14px var(--shadow),
+      0 0 30px rgba(160, 24, 24, 0.05);
+    position: relative;
+    cursor: default;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+
+  .char-card:hover {
+    transform: translateY(-3px) rotate(-0.4deg);
+    box-shadow:
+      0 0 0 1px rgba(0, 0, 0, 0.2) inset,
+      0 8px 22px rgba(0, 0, 0, 0.65),
+      0 0 25px rgba(160, 24, 24, 0.25);
+  }
+
+  .char-card::before {
+    content: "";
+    position: absolute;
+    inset: 4px;
+    border: 1px dashed rgba(107, 74, 31, 0.35);
+    border-radius: 2px;
+    pointer-events: none;
+  }
+
+  .char-name {
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--ink);
+    margin: 0 0 0.15rem;
+    line-height: 1.2;
+  }
+
+  .char-class {
+    font-style: italic;
+    color: #4a2c1a;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .char-status {
+    font-size: 0.82rem;
+    color: var(--blood);
+    border-top: 1px solid rgba(107, 74, 31, 0.4);
+    padding-top: 0.4rem;
+    margin-top: 0.4rem;
+  }
+
+  .char-status.dead {
+    color: #555;
+    text-decoration: line-through;
+  }
+
+  .char-status .badge {
+    display: inline-block;
+    padding: 1px 6px;
+    border-radius: 2px;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-right: 0.4rem;
+  }
+
+  .badge.alive { background: #3a5a2a; color: #e6d5a8; }
+  .badge.dead-b { background: #4a0a0a; color: #d4a84a; }
+  .badge.lost { background: #3a2a4a; color: #d4a84a; }
+
+  /* CHRONICLES */
+  .chronicle {
+    background:
+      linear-gradient(180deg, rgba(230, 213, 168, 0.96) 0%, rgba(201, 180, 131, 0.96) 100%);
+    border: 1px solid #6b4a1f;
+    border-radius: 4px;
+    padding: 1.5rem 1.25rem;
+    box-shadow:
+      0 0 0 1px rgba(0, 0, 0, 0.15) inset,
+      0 6px 25px var(--shadow);
+    position: relative;
+  }
+
+  .chronicle::before {
+    content: "";
+    position: absolute;
+    inset: 6px;
+    border: 1px solid rgba(107, 74, 31, 0.3);
+    border-radius: 3px;
+    pointer-events: none;
+  }
+
+  .session {
+    margin-bottom: 1.8rem;
+  }
+
+  .session:last-child {
+    margin-bottom: 0;
+  }
+
+  .session-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    border-bottom: 1px solid rgba(107, 74, 31, 0.5);
+    padding-bottom: 0.4rem;
+    margin-bottom: 0.6rem;
+    flex-wrap: wrap;
+  }
+
+  .session-title {
+    font-family: 'Cinzel', serif;
+    color: var(--blood);
+    font-weight: 700;
+    font-size: 1.05rem;
+    margin: 0;
+    letter-spacing: 0.05em;
+  }
+
+  .session-date {
+    font-style: italic;
+    color: #4a2c1a;
+    font-size: 0.85rem;
+  }
+
+  .events {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .event {
+    padding: 0.3rem 0.5rem 0.3rem 1.6rem;
+    position: relative;
+    border-radius: 2px;
+    transition: background 0.15s ease;
+    cursor: pointer;
+  }
+
+  .event:hover {
+    background: rgba(107, 15, 15, 0.08);
+  }
+
+  .event::before {
+    position: absolute;
+    left: 0.25rem;
+    top: 0.35rem;
+    font-size: 0.95rem;
+    width: 1.2rem;
+    text-align: center;
+  }
+
+  .event[data-type="lore"]::before { content: "✦"; color: var(--gold); }
+  .event[data-type="kill"]::before { content: "⚔"; color: var(--blood); }
+  .event[data-type="loot"]::before { content: "✶"; color: #8a6a1a; }
+  .event[data-type="death"]::before { content: "☠"; color: #3a0a0a; }
+  .event[data-type="event"]::before { content: "❧"; color: #4a2c1a; }
+
+  .event .ref {
+    border-bottom: 1px dotted var(--blood);
+    cursor: help;
+    color: var(--blood);
+    font-weight: bold;
+  }
+
+  .event .ref.loot { color: #8a6a1a; border-color: #8a6a1a; }
+  .event .ref.foe { color: #6b0f0f; }
+  .event .ref.npc { color: #2a4a6a; border-color: #2a4a6a; }
+
+  /* TOOLTIP */
+  .tooltip {
+    position: fixed;
+    z-index: 100;
+    background: linear-gradient(180deg, #1a0e08, #0e0805);
+    color: var(--bone);
+    border: 1px solid var(--gold);
+    border-radius: 4px;
+    padding: 0.7rem 0.9rem;
+    max-width: 280px;
+    font-size: 0.88rem;
+    line-height: 1.4;
+    box-shadow:
+      0 0 0 1px rgba(184, 137, 58, 0.25) inset,
+      0 8px 30px rgba(0, 0, 0, 0.8),
+      0 0 20px rgba(160, 24, 24, 0.3);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.18s ease;
+    transform: translate(-50%, calc(-100% - 12px));
+  }
+
+  .tooltip.visible {
+    opacity: 1;
+  }
+
+  .tooltip-name {
+    font-family: 'Cinzel', serif;
+    color: var(--gold-bright);
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin-bottom: 0.2rem;
+    display: block;
+  }
+
+  .tooltip-sub {
+    font-style: italic;
+    color: var(--blood-bright);
+    font-size: 0.8rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .tooltip-desc {
+    color: var(--parchment);
+    font-size: 0.85rem;
+  }
+
+  .tooltip::after {
+    content: "";
+    position: absolute;
+    bottom: -7px;
+    left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+    width: 10px;
+    height: 10px;
+    background: #0e0805;
+    border-right: 1px solid var(--gold);
+    border-bottom: 1px solid var(--gold);
+  }
+
+  footer {
+    text-align: center;
+    margin-top: 4rem;
+    color: var(--bone);
+    opacity: 0.55;
+    font-style: italic;
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 600px) {
+    .wrap { padding: 1rem 0.75rem 4rem; }
+    .characters { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 0.6rem; }
+    .char-card { padding: 0.7rem 0.8rem; }
+    .chronicle { padding: 1.1rem 0.85rem; }
+    .event { padding-left: 1.4rem; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="banner">
+    <h1 class="title">Les charniers du chaos</h1>
+    <div class="subtitle">Journal de campagne</div>
+    <div class="dcc-tag">— Dungeon Crawl Classics —</div>
+  </header>
+
+  <!-- ================= PERSONNAGES ================= -->
+  <section>
+    <h2 class="section-title">Les compagnons d'infortune</h2>
+    <div class="characters">
+
+      <div class="char-card">
+        <p class="char-name">Oliver</p>
+        <p class="char-class">Orphelin · niveau 3</p>
+        <p class="char-status"><span class="badge alive">Vivant</span>Hanté par les voix du Démon</p>
+      </div>
+
+      <div class="char-card">
+        <p class="char-name">Brunhilde Lacy</p>
+        <p class="char-class">Guerrière · niveau 4</p>
+        <p class="char-status"><span class="badge alive">Vivante</span>Manchotte depuis la fosse aux goules</p>
+      </div>
+
+      <div class="char-card">
+        <p class="char-name">Mortimer le Pâle</p>
+        <p class="char-class">Magicien · niveau 3</p>
+        <p class="char-status"><span class="badge alive">Vivant</span>Pacte avec un patron innommable</p>
+      </div>
+
+      <div class="char-card">
+        <p class="char-name">Père Aldric</p>
+        <p class="char-class">Clerc de Justicia · niveau 4</p>
+        <p class="char-status"><span class="badge alive">Vivant</span>Foi inébranlable, dents rares</p>
+      </div>
+
+      <div class="char-card">
+        <p class="char-name">Sneak Crochepatte</p>
+        <p class="char-class">Voleur halfelin · niveau 3</p>
+        <p class="char-status"><span class="badge alive">Vivant</span>Doigts plus rapides que la lumière</p>
+      </div>
+
+      <div class="char-card">
+        <p class="char-name">Glimmerith Saralva</p>
+        <p class="char-class">Elfe · niveau 4</p>
+        <p class="char-status"><span class="badge alive">Vivante</span>Cherche son frère disparu dans les charniers</p>
+      </div>
+
+      <div class="char-card">
+        <p class="char-name">Thorgrim Granitfront</p>
+        <p class="char-class">Nain · niveau 3</p>
+        <p class="char-status"><span class="badge alive">Vivant</span>Porte la hache de son aïeul</p>
+      </div>
+
+      <div class="char-card">
+        <p class="char-name">Pipin Tournegruau</p>
+        <p class="char-class">Halfelin · niveau 2</p>
+        <p class="char-status"><span class="badge alive">Vivant</span>Mange plus qu'il ne combat</p>
+      </div>
+
+      <div class="char-card">
+        <p class="char-name">Sœur Marguerite</p>
+        <p class="char-class">Cléricaute de la Dame Blanche · niveau 2</p>
+        <p class="char-status"><span class="badge alive">Vivante</span>Voile taché de sang séché</p>
+      </div>
+
+      <div class="char-card">
+        <p class="char-name">Vargas le Borgne</p>
+        <p class="char-class">Mercenaire · niveau 3</p>
+        <p class="char-status dead"><span class="badge dead-b">Mort</span>Dévoré par les vers de Mesholguilatmorl</p>
+      </div>
+
+      <div class="char-card">
+        <p class="char-name">Eldra la Cendrée</p>
+        <p class="char-class">Sorcière · niveau 4</p>
+        <p class="char-status"><span class="badge alive">Vivante</span>Tousse une fumée violette</p>
+      </div>
+
+      <div class="char-card">
+        <p class="char-name">Bram Pied-de-Loup</p>
+        <p class="char-class">Chasseur · niveau 3</p>
+        <p class="char-status"><span class="badge lost">Disparu</span>Avalé par la brume verte au Puits du Roi</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= CHRONIQUES ================= -->
+  <section>
+    <h2 class="section-title">Chroniques des charniers</h2>
+    <div class="chronicle">
+
+      <div class="session">
+        <div class="session-header">
+          <h3 class="session-title">I. Le village d'Arbrelombre</h3>
+          <span class="session-date">An 1147, mois des Cendres</span>
+        </div>
+        <ul class="events">
+          <li class="event" data-type="lore">Les compagnons se rencontrent à la <span class="ref npc" data-name="Auberge du Bouc Pendu" data-sub="Auberge mal famée d'Arbrelombre" data-desc="Tenue par la veuve Hagrenne. Le bouc accroché au-dessus de la porte serait là depuis 30 ans, et personne ne se rappelle pourquoi.">Auberge du Bouc Pendu</span>.</li>
+          <li class="event" data-type="event">Le bourgmestre <span class="ref npc" data-name="Caspian Houllier" data-sub="Bourgmestre d'Arbrelombre" data-desc="Homme gras et nerveux. Il sait plus de choses sur les disparitions qu'il ne le laisse entendre.">Caspian Houllier</span> leur offre 50 pièces pour enquêter sur les disparitions d'enfants.</li>
+          <li class="event" data-type="kill">Embuscade dans le sous-bois : trois <span class="ref foe" data-name="Goules putrides" data-sub="Mortes-vivantes faméliques" data-desc="Issues du charnier oublié sous la chapelle. Elles puent la rose pourrie et hurlent en latin.">goules putrides</span> abattues.</li>
+          <li class="event" data-type="loot">Trouvé une <span class="ref loot" data-name="Médaille en os" data-sub="Trésor — bibelot maudit" data-desc="Pendentif gravé d'un œil. Murmure dans le sommeil de celui qui la porte. Refuse d'être enlevée jusqu'au prochain crépuscule.">médaille en os</span> sur le cadavre d'un enfant disparu.</li>
+        </ul>
+      </div>
+
+      <div class="session">
+        <div class="session-header">
+          <h3 class="session-title">II. Sous la chapelle</h3>
+          <span class="session-date">An 1147, mois des Cendres</span>
+        </div>
+        <ul class="events">
+          <li class="event" data-type="event">Découverte d'une trappe sous l'autel de la chapelle abandonnée.</li>
+          <li class="event" data-type="kill">Affronté un <span class="ref foe" data-name="Sergent goule" data-sub="Goule plus ancienne, vêtue de mailles rouillées" data-desc="Parlait quand elle attaquait. Disait avoir servi un seigneur dont le nom rendait la langue noire.">sergent goule</span> au fond du puits.</li>
+          <li class="event" data-type="death">Vargas le Borgne tombe — éventré par les vers blancs qui sortaient du sergent.</li>
+          <li class="event" data-type="loot">Récupéré <span class="ref loot" data-name="La Hache du Bouc" data-sub="Arme magique +1" data-desc="Hache à deux mains, le manche entouré de poils. Elle bêle doucement quand l'odeur du sang humain s'approche.">la Hache du Bouc</span> et 230 pièces d'argent.</li>
+          <li class="event" data-type="lore">Première mention écrite de <span class="ref foe" data-name="Mesholguilatmorl" data-sub="Démon majeur du Chaos" data-desc="Connu sous le nom du « Berger des charniers ». Son vrai nom est dangereux à prononcer trois fois. Se nourrit de la mémoire des morts.">Mesholguilatmorl</span> sur un mur couvert d'ongles humains.</li>
+        </ul>
+      </div>
+
+      <div class="session">
+        <div class="session-header">
+          <h3 class="session-title">III. La forêt qui saigne</h3>
+          <span class="session-date">An 1147, mois du Loup</span>
+        </div>
+        <ul class="events">
+          <li class="event" data-type="event">Le groupe est guidé par <span class="ref npc" data-name="Ysolt aux Branches" data-sub="Druidesse exilée" data-desc="Vit avec une corneille à trois pattes. Elle hait les clercs mais aide Aldric pour des raisons qu'elle refuse d'expliquer.">Ysolt aux Branches</span> jusqu'à un cercle de pierres qui suinte.</li>
+          <li class="event" data-type="kill">Combat contre une meute de <span class="ref foe" data-name="Limiers du chaos" data-sub="Chiens de cauchemar à deux têtes" data-desc="Chacune des deux têtes mord dans un plan différent. Le sang qu'ils crachent fait pousser des champignons.">limiers du chaos</span>.</li>
+          <li class="event" data-type="kill">Brunhilde tranche la main d'un <span class="ref foe" data-name="Cultiste du Berger" data-sub="Adorateur tatoué de Mesholguilatmorl" data-desc="Sa main coupée a continué de ramper trois heures durant. Marguerite a dû la bénir deux fois pour qu'elle s'arrête.">cultiste du Berger</span>... la main continue de ramper.</li>
+          <li class="event" data-type="loot">Trouvé une <span class="ref loot" data-name="Fiole de larmes de saint" data-sub="Trésor — relique sacrée" data-desc="Trois usages restants. Une goutte sur une plaie purifie. Une goutte dans un œil révèle les mensonges. Une goutte sur la langue rend muet une journée.">fiole de larmes de saint</span> (3 usages).</li>
+        </ul>
+      </div>
+
+      <div class="session">
+        <div class="session-header">
+          <h3 class="session-title">IV. Le Puits du Roi</h3>
+          <span class="session-date">An 1147, mois du Loup</span>
+        </div>
+        <ul class="events">
+          <li class="event" data-type="lore">Arrivée à la cité ruinée de <span class="ref npc" data-name="Veille-Vasque" data-sub="Cité morte du roi Ardoth" data-desc="Engloutie par la brume verte trois siècles plus tôt. On dit que les pavés s'y déplacent la nuit.">Veille-Vasque</span>, recouverte par la brume verte.</li>
+          <li class="event" data-type="event">Bram Pied-de-Loup est avalé par la brume en voulant remplir une outre.</li>
+          <li class="event" data-type="kill">Vaincu un <span class="ref foe" data-name="Wraith couronné" data-sub="Spectre du roi Ardoth lui-même" data-desc="Drape de bure mangée par les mites. Une couronne rouillée fond dans le crâne. Demande à chaque rencontre : « Mes os sont-ils enfin propres ? »">wraith couronné</span> dans la salle du trône engloutie.</li>
+          <li class="event" data-type="loot">Récupéré la <span class="ref loot" data-name="Couronne d'Ardoth" data-sub="Trésor — artefact maudit" data-desc="Couronne en fer noir. Quiconque la porte gagne +2 en commandement, mais perd un souvenir d'enfance par lune.">Couronne d'Ardoth</span>, 800 po, et trois gemmes noires.</li>
+          <li class="event" data-type="lore">Mortimer reconnaît dans les fresques le sceau de <span class="ref foe" data-name="Mesholguilatmorl" data-sub="Démon majeur du Chaos" data-desc="Le « Berger des charniers ». Son culte remonte à avant le roi Ardoth. Il aurait été emprisonné — ou affamé — dans la dernière caverne.">Mesholguilatmorl</span> — il aurait été emprisonné sous la cité.</li>
+        </ul>
+      </div>
+
+      <div class="session">
+        <div class="session-header">
+          <h3 class="session-title">V. Les charniers</h3>
+          <span class="session-date">An 1148, mois des Os</span>
+        </div>
+        <ul class="events">
+          <li class="event" data-type="event">Descente dans les <span class="ref npc" data-name="Charniers du Chaos" data-sub="Catacombes sous Veille-Vasque" data-desc="Sept niveaux connus. Les murs sont faits d'ossements cimentés au sel et à la cire. Chaque crâne murmure si on s'en approche.">Charniers du Chaos</span>, sept niveaux d'ossements.</li>
+          <li class="event" data-type="kill">Massacre d'une <span class="ref foe" data-name="Procession de moines-vers" data-sub="Cultistes transformés" data-desc="N'ont plus que le tronc et la tête. Marchent sur leurs entrailles. Chantent un cantique inversé.">procession de moines-vers</span> au troisième niveau.</li>
+          <li class="event" data-type="loot">Pillé un autel : <span class="ref loot" data-name="Anneau de l'Œil Clos" data-sub="Trésor — anneau magique" data-desc="Une fois par jour, le porteur peut fermer les yeux et voir à travers un mur sur 3 mètres. Saigne du nez à chaque usage.">Anneau de l'Œil Clos</span>, et 1200 po en pièces fondues.</li>
+          <li class="event" data-type="kill">Glimmerith retrouve son frère — devenu une <span class="ref foe" data-name="Coquille d'os" data-sub="Cadavre habité par un fragment du démon" data-desc="Le corps qu'on aimait, sans rien dedans qu'un peu de Lui. Toujours capable de prononcer un dernier nom.">coquille d'os</span>. Elle l'abat elle-même.</li>
+          <li class="event" data-type="lore">Au septième niveau, le pacte de Mortimer est révélé : son patron est un <span class="ref foe" data-name="Ennemi du Berger" data-sub="Entité innommable, rivale de Mesholguilatmorl" data-desc="Mortimer ignorait servir un dieu mourant qui veut dévorer Mesholguilatmorl avant que celui-ci ne se relève.">ennemi du Berger</span>.</li>
+        </ul>
+      </div>
+
+      <div class="session">
+        <div class="session-header">
+          <h3 class="session-title">VI. Face au Berger</h3>
+          <span class="session-date">An 1148, mois des Os</span>
+        </div>
+        <ul class="events">
+          <li class="event" data-type="event">Le groupe brise le sceau final. La cage de sel craque.</li>
+          <li class="event" data-type="kill">Affrontement contre <span class="ref foe" data-name="Mesholguilatmorl" data-sub="Démon du Chaos, Berger des charniers" data-desc="Apparaît comme un berger très grand, sans visage, vêtu de peaux humaines retournées. Son bâton est un fémur géant. Sa voix fait pleurer les morts.">Mesholguilatmorl</span> — première forme repoussée.</li>
+          <li class="event" data-type="death">Père Aldric brûle un œil pour canaliser le Verbe de Justicia.</li>
+          <li class="event" data-type="loot">Sneak dérobe une <span class="ref loot" data-name="Côte du Berger" data-sub="Trésor — composante magique unique" data-desc="Petit os ivoire, encore tiède. Sert de composante à un sort capable de tuer définitivement un démon majeur. Un seul usage.">côte du Berger</span> à même la créature.</li>
+          <li class="event" data-type="event">Le démon disparaît dans une fissure verticale qui se referme sur lui-même. <em>À suivre…</em></li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+  <footer>
+    « Ce qui dort dans la terre s'y est endormi pour une raison. »
+  </footer>
+
+</div>
+
+<div class="tooltip" id="tooltip" role="tooltip">
+  <span class="tooltip-name" id="tt-name"></span>
+  <div class="tooltip-sub" id="tt-sub"></div>
+  <div class="tooltip-desc" id="tt-desc"></div>
+</div>
+
+<script>
+(function () {
+  const tooltip = document.getElementById('tooltip');
+  const ttName = document.getElementById('tt-name');
+  const ttSub  = document.getElementById('tt-sub');
+  const ttDesc = document.getElementById('tt-desc');
+  let activeRef = null;
+
+  function showTooltip(el) {
+    const name = el.dataset.name || el.textContent;
+    const sub  = el.dataset.sub || '';
+    const desc = el.dataset.desc || '';
+    ttName.textContent = name;
+    ttSub.textContent  = sub;
+    ttSub.style.display = sub ? 'block' : 'none';
+    ttDesc.textContent = desc;
+    ttDesc.style.display = desc ? 'block' : 'none';
+
+    const rect = el.getBoundingClientRect();
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+
+    // Make tooltip visible first to measure
+    tooltip.classList.add('visible');
+    const tw = tooltip.offsetWidth;
+    const th = tooltip.offsetHeight;
+
+    let x = rect.left + rect.width / 2;
+    let y = rect.top;
+
+    // Clamp horizontally
+    const half = tw / 2;
+    if (x - half < 8) x = half + 8;
+    if (x + half > vw - 8) x = vw - half - 8;
+
+    // If not enough space above, show below
+    if (y - th - 14 < 8) {
+      tooltip.style.transform = `translate(-50%, ${rect.bottom + 12}px) translate(0,0)`;
+      tooltip.style.left = x + 'px';
+      tooltip.style.top  = rect.bottom + 12 + 'px';
+      tooltip.style.transform = 'translate(-50%, 0)';
+      tooltip.querySelector ? null : null;
+    } else {
+      tooltip.style.left = x + 'px';
+      tooltip.style.top  = (rect.top - 12) + 'px';
+      tooltip.style.transform = 'translate(-50%, -100%)';
+    }
+  }
+
+  function hideTooltip() {
+    tooltip.classList.remove('visible');
+    activeRef = null;
+  }
+
+  // Hover for refs (desktop)
+  document.querySelectorAll('.ref').forEach(el => {
+    el.addEventListener('mouseenter', () => showTooltip(el));
+    el.addEventListener('mouseleave', hideTooltip);
+    el.addEventListener('focus', () => showTooltip(el));
+    el.addEventListener('blur', hideTooltip);
+    el.setAttribute('tabindex', '0');
+  });
+
+  // Tap for mobile (events as a whole — first .ref inside, if any)
+  document.querySelectorAll('.event').forEach(li => {
+    li.addEventListener('click', (e) => {
+      // If we clicked directly on a ref, the ref's own handler took care of it
+      if (e.target.closest('.ref')) return;
+      const ref = li.querySelector('.ref');
+      if (!ref) return;
+      if (activeRef === ref) {
+        hideTooltip();
+      } else {
+        showTooltip(ref);
+        activeRef = ref;
+      }
+    });
+  });
+
+  // Tap on refs themselves (mobile)
+  document.querySelectorAll('.ref').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (activeRef === el) {
+        hideTooltip();
+      } else {
+        showTooltip(el);
+        activeRef = el;
+      }
+    });
+  });
+
+  // Close tooltip on outside tap
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.event') && !e.target.closest('.ref')) {
+      hideTooltip();
+    }
+  });
+
+  // Reposition on scroll/resize
+  window.addEventListener('scroll', hideTooltip, { passive: true });
+  window.addEventListener('resize', hideTooltip);
+})();
+</script>
+</body>
+</html>
